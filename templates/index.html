@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VFS VISA API</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #4CAF50;
+        }
+        a {
+            color: #009688;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        pre {
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        pre code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>API Request URL</h2>
+        <p>API Endpoint: <a href="/api/v1/">/api/v1/</a></p>
+
+        <h2>POST Request Format</h2>
+        <pre><code>
+{
+    "AppointmentLocations": {
+        "cityName": "Bangalore"
+    },
+    "VisaDestinationLocations": {
+        "countryName": "Spain",
+        "numberOfPeople": 3
+    }
+}
+        </code></pre>
+
+        <h2>Return Data Format</h2>
+        <pre><code>
+{
+    "AppointmentAvailability": {
+        "cityName": "Bangalore",
+        "updatedDateTime": "",
+        "VisaDestinationLocations": {
+            "countryName": "Spain",
+            "availableDate": "",
+            "NumberOfPeople": ""
+        }
+    }
+}
+        </code></pre>
+    </div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+"AppointmentLocations": {
+  "cityName":"Bangalore"
+},
+"VisaDestinationLocations": {
+  "countryName":"Spain",
+  "numberOfPeople":3
+}
+}

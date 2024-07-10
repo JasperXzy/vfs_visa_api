@@ -1,0 +1,11 @@
+{
+"AppointmentAvailability": {
+  "cityName": "Bangalore",
+  "updatedDateTime": "",
+  "VisaDestinationLocations": {
+    "countryName": "Spain",
+    "availableDate": "",
+    "NumberOfPeople": ""
+  }
+}
+}
