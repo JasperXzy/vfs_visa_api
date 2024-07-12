@@ -1,5 +1,12 @@
+# Basic Auth Configurations
 2captcha_apikey:
+username:
+password:
+
+# Basic Configurations
+browser_executable_path: "C:/Program Files/Google/Chrome/Application/chrome.exe"
 twocaptcha_url: "https://2captcha.com/in.php"
 site_key: 0x4AAAAAAACYaM3U_Dz-4DN1
 basic_url: https://visa.vfsglobal.com/ind/en/
-
+referer_url: https://visa.vfsglobal.com/
+login_api_url: https://lift-api.vfsglobal.com/user/login

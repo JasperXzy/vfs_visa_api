@@ -5,15 +5,18 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def index():  # put application's code here
+def index():
     return render_template('index.html')
 
 
 @app.route('/api/v1/', methods=['POST'])
 def api_v1():
     data = request.get_json()
+    config = functions.load_config()
     country_code = data['countryCode']
-    return functions.pass_captcha(country_code)
+    token = functions.pass_captcha(config, country_code)
+    driver = functions.uc_driver(config)
+    return functions.login(config, country_code, driver, token)
 
 
 if __name__ == '__main__':
