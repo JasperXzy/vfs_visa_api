@@ -1,13 +1,17 @@
 import time
-import requests
 import yaml
+import pyautogui
+import pyscreeze
 import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def load_config():
     """
     This function will load the configuration file
-    :return: config data
+    :return: Configuration data
     """
 
     # Load configuration file
@@ -20,119 +24,61 @@ def load_config():
 def uc_driver(config):
     """
     This function will create an undetected Chrome driver
+    :param config: Configuration data
     :return: undetected Chrome driver
     """
 
-    # Create undetected Chrome driver
-    driver = uc.Chrome(headless=True, use_subprocess=False, browser_executable_path=config['browser_executable_path'])
+    # Create custom undetected Chrome driver
+    options = uc.ChromeOptions()
+    driver = uc.Chrome(options=options, headless=False, use_subprocess=False,
+                       driver_executable_path=config['browser_driver_path'])
+    driver.maximize_window()
 
     return driver
 
 
-def pass_captcha(config, country_code):
-    """
-    This function will use 2captcha to solve the Cloudflare Turnstile captcha
-    :param config: configuration data
-    :param country_code: request country code
-    :return: Cloudflare Turnstile captcha token
-    """
-
-    # Set payload
-    payload = {
-        "key": config['2captcha_apikey'],
-        "method": "turnstile",
-        "sitekey": config['site_key'],
-        "pageurl": config['basic_url'] + country_code + '/login',
-        "json": 1
-    }
-
-    # Send request to 2captcha
-    response = requests.post(url=config['twocaptcha_url'], data=payload)
-
-    # Get response from 2captcha
-    response_url = ("https://2captcha.com/res.php?key=" + config['2captcha_apikey'] + "&action=get&id=" +
-                    response.json()['request'] + "&json=1")
-
-    # Wait for response from 2captcha
-    for i in range(0, 15):
-        response = requests.get(url=response_url)
-        if response.json()['request'] != "CAPCHA_NOT_READY":
-            print("Captcha Solved")
-            print("Cloudflare Turnstile Token: " + response.json().get('request'))
-            break
-        else:
-            print("Captcha Not Ready")
-        time.sleep(3)
-    captcha_solution = response.json().get('request')
-
-    return captcha_solution
-
-
-def login(config, country_code, driver, token):
+def login(config, driver, country_code):
     """
     This function will login to the website
-    :param config: configuration data
-    :param country_code: request country code
+    :param config: Configuration data
     :param driver: undetected Chrome driver
-    :param token: Cloudflare Turnstile captcha token
-    :return: response data
+    :param country_code: Requested country code
+    :return: None
     """
 
-    # Open a blank page
-    driver.get("about:blank")
+    # Create a wait object
+    wait = WebDriverWait(driver=driver, timeout=20, poll_frequency=0.5)
 
-    js_script = """
-    function sendPostRequest(url, data, headers) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
-        for (var key in headers) {
-            xhr.setRequestHeader(key, headers[key]);
-        }
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                console.log("Response:", xhr.responseText);
-                window.postMessage({status: xhr.status, response: xhr.responseText}, "*");
-            }
-        };
-        xhr.send(data);
-    }
-    
-    sendPostRequest(arguments[0], arguments[1], arguments[2]);
-    """
+    # Load the login URL
+    login_url = config['basic_url'] + country_code + "/book-an-appointment"
+    driver.get(login_url)
 
-    # Set target URL
-    target_url = config['login_api_url']
+    # Wait for booking the page to load
+    appointment_xpath = "//*[@id=\"__layout\"]/div/main/div/div/div[3]/div/p[29]/a"
+    wait.until(EC.presence_of_element_located((By.XPATH, appointment_xpath)))
+    driver.find_element(By.XPATH, appointment_xpath).click()
 
-    # Set payload
-    payload = {
-        "username": config['username'],
-        "password": config['password'],
-        "missioncode": country_code,
-        "countrycode": "ind",
-        "languageCode": "en-US",
-        "captcha_version": "cloudflare-v1",
-        "captcha_api_key": token
-    }
-
-    # Set headers
-    headers = {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': config['referer_url'],
-        'Route': 'ind/en/' + country_code,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/126.0.0.0 Safari/537.36',
-
-
-    }
-    payload_str = '&'.join([f'{key}={value}' for key, value in payload.items()])
-
-    # Send request to login
-    driver.execute_script(js_script, target_url, payload_str, headers)
+    # Wait for the solution of Cloudflare Turnstile
+    while True:
+        try:
+            captcha = pyscreeze.locateOnScreen(config['captcha_path'], confidence=0.9, grayscale=True)
+            if captcha is not None:
+                break
+        except pyscreeze.ImageNotFoundException:
+            pass
+    location = pyscreeze.locateOnScreen(config['captcha_click_path'], confidence=0.8)
+    center = pyautogui.center(location)
+    time.sleep(2)
+    pyautogui.click(center)
     time.sleep(10)
 
-    return driver.page_source
+    # Enter the username and password
+    windows = driver.window_handles
+    driver.switch_to.window(windows[-1])
+    driver.find_element(By.XPATH, config['username_xpath']).send_keys(config['username'])
+    driver.find_element(By.XPATH, config['password_xpath']).send_keys(config['password'])
+    driver.find_element(By.XPATH, config['submit_xpath']).click()
 
 
-def appointment():
+def appointment(config, driver, country_code):
     pass

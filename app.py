@@ -14,9 +14,8 @@ def api_v1():
     data = request.get_json()
     config = functions.load_config()
     country_code = data['countryCode']
-    token = functions.pass_captcha(config, country_code)
     driver = functions.uc_driver(config)
-    return functions.login(config, country_code, driver, token)
+    return functions.login(config, driver, country_code)
 
 
 if __name__ == '__main__':

@@ -1,12 +1,13 @@
 # Basic Auth Configurations
-2captcha_apikey:
 username:
 password:
 
 # Basic Configurations
-browser_executable_path: "C:/Program Files/Google/Chrome/Application/chrome.exe"
-twocaptcha_url: "https://2captcha.com/in.php"
-site_key: 0x4AAAAAAACYaM3U_Dz-4DN1
+browser_driver_path: ./driver/chromedriver.exe
 basic_url: https://visa.vfsglobal.com/ind/en/
-referer_url: https://visa.vfsglobal.com/
-login_api_url: https://lift-api.vfsglobal.com/user/login
+make_appointment_xpath: //*[@id="__layout"]/div/main/div/div/div[3]/div/p[29]/a
+username_xpath: //*[@id="mat-input-0"]
+password_xpath: //*[@id="mat-input-1"]
+captcha_path: ./driver/captcha.png
+captcha_click_path: ./driver/captcha_click.png
+submit_xpath: /html/body/app-root/div/div/app-login/section/div/div/mat-card/form/button
