@@ -1,3 +1,9 @@
 {
-  "countryCode": "isl"
+"AppointmentLocations": {
+  "cityName":"Bangalore"
+},
+"VisaDestinationLocations": {
+  "countryName":"isl",
+  "numberOfPeople":3
+}
 }

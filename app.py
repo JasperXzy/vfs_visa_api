@@ -13,9 +13,14 @@ def index():
 def api_v1():
     data = request.get_json()
     config = functions.load_config()
-    country_code = data['countryCode']
+    country_code = data['VisaDestinationLocations']['countryName']
+    application_center = data['AppointmentLocations']['cityName']
     driver = functions.uc_driver(config)
-    return functions.login(config, driver, country_code)
+    is_login_success = functions.login(config, driver, country_code)
+    if is_login_success:
+        return functions.appointment(config, driver, application_center)
+    else:
+        return functions.login_error()
 
 
 if __name__ == '__main__':

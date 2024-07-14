@@ -5,9 +5,18 @@ password:
 # Basic Configurations
 browser_driver_path: ./driver/chromedriver.exe
 basic_url: https://visa.vfsglobal.com/ind/en/
+
+# Login Configurations
 make_appointment_xpath: //*[@id="__layout"]/div/main/div/div/div[3]/div/p[29]/a
 username_xpath: //*[@id="mat-input-0"]
 password_xpath: //*[@id="mat-input-1"]
 captcha_path: ./driver/captcha.png
+captcha_success_path: ./driver/captcha_success.png
 captcha_click_path: ./driver/captcha_click.png
 submit_xpath: /html/body/app-root/div/div/app-login/section/div/div/mat-card/form/button
+new_booking_xpath: /html/body/app-root/div/div/app-dashboard/section[1]/div/div[2]/div/button
+
+# Booking Configurations
+application_center_xpath: /html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[1]/mat-form-field/div/div[1]/div[3]
+appointment_category_xpath: /html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[2]/mat-form-field/div/div[1]/div[3]
+sub_category_xpath: /html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[3]/mat-form-field/div/div[1]/div[3]
