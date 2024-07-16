@@ -10,14 +10,14 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def load_config():
+def load_config(config_path):
     """
     This function will load the configuration file
     :return: Configuration data
     """
 
     # Load configuration file
-    with open('config.yml', 'r', encoding='UTF-8') as file:
+    with open(config_path, 'r', encoding='UTF-8') as file:
         config = yaml.safe_load(file)
 
     return config
@@ -108,24 +108,26 @@ def login_error():
     print("Login Failed")
 
 
-def appointment(config, driver, application_center):
+def appointment(config, driver, country_code, application_center):
     """
     This function will book an appointment
     :param config: Configuration data
     :param driver: undetected Chrome driver
     :param application_center: Application center
-    :return:
+    :return: Page text
     """
 
     # Create a wait object
     wait = WebDriverWait(driver=driver, timeout=20, poll_frequency=0.5)
 
     # Load the appointment URL
-    wait.until(EC.element_to_be_clickable((By.XPATH, config['new_booking_xpath'])))
+    time.sleep(2)
+    wait.until(EC.presence_of_element_located((By.XPATH, config['new_booking_xpath'])))
     driver.find_element(By.XPATH, config['new_booking_xpath']).click()
 
     # Select application center
-    wait.until(EC.presence_of_element_located((By.XPATH, config['application_center_xpath'])))
+    time.sleep(5)
+    wait.until(EC.element_to_be_clickable((By.XPATH, config['application_center_xpath'])))
     driver.find_element(By.XPATH, config['application_center_xpath']).click()
     wait.until(EC.element_located_to_be_selected((By.XPATH, config['application_center_select_xpath'])))
     application_center_select = driver.find_element(By.XPATH, config['application_center_select_xpath'])
@@ -151,13 +153,28 @@ def appointment(config, driver, application_center):
 
 
 if __name__ == '__main__':
-    test_data = json.load(open('./test/test_post.json', 'r', encoding='utf-8'))
-    test_config = load_config()
-    test_country_code = test_data['VisaDestinationLocations']['countryName']
-    test_application_center = test_data['AppointmentLocations']['cityName']
-    test_driver = uc_driver(test_config)
-    is_login_success = login(test_config, test_driver, test_country_code)
+    # Load POST request data
+    data = json.load(open('./test/test_post.json', 'r', encoding='utf-8'))
+
+    # Load basic configuration data
+    config = load_config('./config.yml')
+
+    # Load country code configuration data
+    country_config = load_config('./dicts/des_country_code.yml')
+
+    # Select destination country
+    country = data['VisaDestinationLocations']['countryName']
+
+    # Transfer country name to country code
+    country_alpha = country_config[country]
+
+    # Load country configuration data
+    basic_country_config = load_config(f'./dicts/{country_alpha}.yml')
+
+    application_center = data['AppointmentLocations']['cityName']
+    driver = uc_driver(config)
+    is_login_success = login(config, driver, country_alpha)
     if is_login_success:
-        appointment(test_config, test_driver, test_application_center)
+        appointment(config, driver, country_alpha, application_center)
     else:
         login_error()

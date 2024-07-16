@@ -1,7 +1,107 @@
 # country name
+Austria: aut
+Azerbaijan: aze
+Belgium: bel
+Bulgaria: bgr
 Canada: can
+China: chn
+Croatia: hrv
+Cyprus: cyp
+Czech Republic: cze
+Denmark: dnk
+Dominican Republic: dom
+Egypt: egy
+Equatorial Guinea: gnq
+Estonia: est
+Faroe Islands: fro
+Finland: fin
+France: fra
+Georgia: geo
+Germany: deu
+Greenland: grl
+Hungary: hun
 Iceland: isl
+Ireland: irl
+Italy: ita
+Japan: jpn
+Laos: lao
+Latvia: lva
+Lebanon: lbn
+Lithuania: ltu
+Luxembourg: lux
+Malta: mlt
+Morocco: mar
+New Zealand: nzl
+Nigeria: nga
+Norway: nor
+Poland: pol
+Portugal: prt
+Saudi Arabia: sau
+Slovakia: svk
+South Africa: zaf
+Sri Lanka: lka
+Suriname: sur
+Sweden: swe
+Switzerland: che
+Thailand: tha
+The Netherlands: nld
+Turkey: tur
+Ukraine: ukr
+United Arab Emirates: are
+United Kingdom: gbr
+United States of America: usa
+Vietnam: vnm
 
 # country code(alpha-2)
+AT: aut
+AZ: aze
+BE: bel
+BG: bgr
 CA: can
+CN: chn
+HR: hrv
+CY: cyp
+CZ: cze
+DK: dnk
+DO: dom
+EG: egy
+GQ: gnq
+EE: est
+FO: fro
+FI: fin
+FR: fra
+GE: geo
+DE: deu
+GL: grl
+HU: hun
 IS: isl
+IE: irl
+IT: ita
+JP: jpn
+LA: lao
+LV: lva
+LB: lbn
+LT: ltu
+LU: lux
+MT: mlt
+MA: mar
+NZ: nzl
+NG: nga
+NO: nor
+PL: pol
+PT: prt
+SA: sau
+SK: svk
+ZA: zaf
+LK: lka
+SR: sur
+SE: swe
+CH: che
+TH: tha
+NL: nld
+TR: tur
+UA: ukr
+AE: are
+GB: gbr
+US: usa
+VN: vnm
