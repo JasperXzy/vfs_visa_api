@@ -1,3 +1,4 @@
+# Application center
 Bangalore: Iceland Visa Application - Bangalore
 Mumbai: Iceland Visa Application - Mumbai
 Delhi: Iceland Visa Application - Delhi
@@ -9,3 +10,17 @@ Chennai: Iceland Visa Application Center ,Chennai
 Ahmedabad: Iceland Visa Application Center ,Ahmedabad
 Hyderabad: Iceland Visa Application Center ,Hyderabad
 Cochin: Iceland Visa Application Center ,Cochin
+
+# Appointment configurations
+make_appointment_xpath: //*[@id="__layout"]/div/main/div/div/div[3]/div/p[29]/a
+username_xpath: //*[@id="mat-input-0"]
+password_xpath: //*[@id="mat-input-1"]
+submit_xpath: /html/body/app-root/div/div/app-login/section/div/div/mat-card/form/button
+new_booking_xpath: /html/body/app-root/div/div/app-dashboard/section[1]/div/div[2]/div/button
+application_center_xpath: /html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[1]/mat-form-field
+application_center_select_xpath: //*[@id="mat-select-0-panel"]
+appointment_category_xpath: /html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[2]/mat-form-field/div/div[1]/div[3]
+appointment_category_select_xpath: //*[@id="mat-select-1-panel"]
+sub_category_xpath: /html/body/app-root/div/div/app-eligibility-criteria/section/form/mat-card[1]/form/div[3]/mat-form-field/div/div[1]/div[3]
+sub_category_select_xpath: //*[@id="mat-select-2-panel"]
+return_slot_xpath: /html/

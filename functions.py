@@ -56,9 +56,8 @@ def login(config, driver, country_code):
     driver.get(login_url)
 
     # Wait for booking the page to load
-    appointment_xpath = "//*[@id=\"__layout\"]/div/main/div/div/div[3]/div/p[29]/a"
-    wait.until(EC.presence_of_element_located((By.XPATH, appointment_xpath)))
-    driver.find_element(By.XPATH, appointment_xpath).click()
+    wait.until(EC.presence_of_element_located((By.XPATH, config['make_appointment_xpath'])))
+    driver.find_element(By.XPATH, config['make_appointment_xpath']).click()
 
     # Wait for the solution of Cloudflare Turnstile
     while True:
@@ -103,12 +102,14 @@ def login(config, driver, country_code):
 def login_error():
     """
     This function will handle login errors
-    :return: None
+    :return: Login failed message
     """
     print("Login Failed")
 
+    return "Login Failed"
 
-def appointment(config, driver, country_code, application_center):
+
+def appointment(config, driver, application_center):
     """
     This function will book an appointment
     :param config: Configuration data
@@ -126,27 +127,37 @@ def appointment(config, driver, country_code, application_center):
     driver.find_element(By.XPATH, config['new_booking_xpath']).click()
 
     # Select application center
-    time.sleep(5)
-    wait.until(EC.element_to_be_clickable((By.XPATH, config['application_center_xpath'])))
-    driver.find_element(By.XPATH, config['application_center_xpath']).click()
-    wait.until(EC.element_located_to_be_selected((By.XPATH, config['application_center_select_xpath'])))
-    application_center_select = driver.find_element(By.XPATH, config['application_center_select_xpath'])
-    Select(application_center_select).select_by_visible_text(application_center)
+    time.sleep(2)
+    try:
+        wait.until(EC.element_to_be_clickable((By.XPATH, config['application_center_xpath'])))
+        driver.find_element(By.XPATH, config['application_center_xpath']).click()
+        wait.until(EC.element_located_to_be_selected((By.XPATH, config['application_center_select_xpath'])))
+        application_center_select = driver.find_element(By.XPATH, config['application_center_select_xpath'])
+        Select(application_center_select).select_by_visible_text(application_center)
+    except Exception as e:
+        print(e)
 
     # Select appointment category
-    wait.until(EC.presence_of_element_located((By.XPATH, config['appointment_category_xpath'])))
-    driver.find_element(By.XPATH, config['appointment_category_xpath']).click()
-    wait.until(EC.element_located_to_be_selected((By.XPATH, config['appointment_category_select_xpath'])))
-    appointment_category_select = driver.find_element(By.XPATH, config['appointment_category_select_xpath'])
-    Select(appointment_category_select).select_by_visible_text("Short Term")
+    time.sleep(2)
+    try:
+        wait.until(EC.element_to_be_clickable((By.XPATH, config['appointment_category_xpath'])))
+        driver.find_element(By.XPATH, config['appointment_category_xpath']).click()
+        wait.until(EC.element_located_to_be_selected((By.XPATH, config['appointment_category_select_xpath'])))
+        appointment_category_select = driver.find_element(By.XPATH, config['appointment_category_select_xpath'])
+        Select(appointment_category_select).select_by_visible_text("Short Term")
+    except Exception as e:
+        print(e)
 
     # Select sub category
-    wait.until(EC.presence_of_element_located((By.XPATH, config['appointment_sub_category_xpath'])))
-    driver.find_element(By.XPATH, config['appointment_sub_category_xpath']).click()
-    wait.until(EC.element_located_to_be_selected((By.XPATH, config['appointment_sub_category_select_xpath'])))
-    appointment_sub_category_select = driver.find_element(By.XPATH, config['appointment_sub_category_select_xpath'])
-    Select(appointment_sub_category_select).select_by_visible_text("Tourism")
-
+    time.sleep(2)
+    try:
+        wait.until(EC.element_to_be_clickable((By.XPATH, config['appointment_sub_category_xpath'])))
+        driver.find_element(By.XPATH, config['appointment_sub_category_xpath']).click()
+        wait.until(EC.element_located_to_be_selected((By.XPATH, config['appointment_sub_category_select_xpath'])))
+        appointment_sub_category_select = driver.find_element(By.XPATH, config['appointment_sub_category_select_xpath'])
+        Select(appointment_sub_category_select).select_by_visible_text("Tourism")
+    except Exception as e:
+        print(e)
     time.sleep(5)
 
     return driver.text
@@ -156,25 +167,32 @@ if __name__ == '__main__':
     # Load POST request data
     data = json.load(open('./test/test_post.json', 'r', encoding='utf-8'))
 
-    # Load basic configuration data
-    config = load_config('./config.yml')
+    # Load configuration data
+    basic_config = load_config('./config.yml')
 
     # Load country code configuration data
-    country_config = load_config('./dicts/des_country_code.yml')
-
-    # Select destination country
-    country = data['VisaDestinationLocations']['countryName']
-
-    # Transfer country name to country code
-    country_alpha = country_config[country]
+    country_code_config = load_config('./dicts/des_country_code.yml')
+    country_name = data['VisaDestinationLocations']['countryName']
+    country_code = country_code_config[country_name]
 
     # Load country configuration data
-    basic_country_config = load_config(f'./dicts/{country_alpha}.yml')
+    appointment_config = load_config(f'./dicts/{country_code}.yml')
 
+    # Merge basic configuration and country configuration
+    config = {**basic_config, **appointment_config}
+
+    # Select application center
     application_center = data['AppointmentLocations']['cityName']
+    application_center_name = config[application_center]
+
+    # Start the driver
     driver = uc_driver(config)
-    is_login_success = login(config, driver, country_alpha)
+
+    # Judge whether the login is successful
+    is_login_success = login(config, driver, country_code)
+
+    # If login is successful, then go to the appointment page
     if is_login_success:
-        appointment(config, driver, country_alpha, application_center)
+        appointment(config, driver, application_center_name)
     else:
         login_error()
